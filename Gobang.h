@@ -18,7 +18,7 @@ class Gobang {
 
     vector<vector<int *> > winningArray{572, vector<int *>(5)};
     vector<vector<int> > isValid{17, vector<int>(17, 0)};
-    map<int, pair<pair<int, int>, pair<int, int> >> winningArrayDic;
+    map<int, pair<pair<int, int>, pair<int, int> > > winningArrayDic;
     int winningPosition = 0;
 
 public:
@@ -46,12 +46,18 @@ public:
 
     pair<int, int> next();
 
-    int evaluate();
-
 private:
+    int evaluateBoard();
+
+    int evaluatePoint(pair<int, int>);
+
     vector<int> getLine(int, pair<int, int>);
 
     static int analysisLine(const vector<int> &, int);
+
+    static int analysisPoint_my(const vector<int> &, int);
+
+    static int analysisPoint_adversary(const vector<int> &, int);
 
     int alphaBeta(int, int, int, pair<int, int> * = nullptr);
 };

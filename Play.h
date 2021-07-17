@@ -4,8 +4,6 @@
 #include "Gobang.h"
 #include "EasyX.h"
 
-#include <iostream>
-
 class Play {
     int firstPlayer = 1, secondPlayer = 1;
     Gobang gobang;

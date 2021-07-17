@@ -52,7 +52,6 @@ int Play::run() {
             prePos = gobang.getPrevPiece();
             EasyX::printPieces(pos, prePos, turn);
         }
-        std::cout << gobang.evaluate() << std::endl;
         int res = gobang.judge();
         if (res) {
             pair<pair<int, int>, pair<int, int> > winningPos = gobang.getWinningPos();
