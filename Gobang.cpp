@@ -134,7 +134,12 @@ pair<pair<int, int>, pair<int, int> > Gobang::getWinningPos() {
 
 pair<int, int> Gobang::next() {
     pair<int, int> pos;
-    alphaBeta((turn == 1 ? 8 : 8), INT_MIN, INT_MAX, &pos);
+    if (record.size() < 3 || record.size() > 150)
+        alphaBeta(6, INT_MIN, INT_MAX, &pos);
+    else if (record.size() > 170)
+        alphaBeta(4, INT_MIN, INT_MAX, &pos);
+    else
+        alphaBeta(8, INT_MIN, INT_MAX, &pos);
     return pos;
 }
 
@@ -157,7 +162,7 @@ int Gobang::alphaBeta(int depth, int alpha, int beta, pair<int, int> *pos) {
     });
     if (turn == 1) {
         score = INT_MIN;
-        for (int i = 0; i < candidates.size() && i < 5; ++i) {
+        for (int i = 0; i < candidates.size() && i < 7; ++i) {
             auto x = candidates[i].second;
             drop(x);
             int res = alphaBeta(depth - 1, alpha, beta) - (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
@@ -173,7 +178,7 @@ int Gobang::alphaBeta(int depth, int alpha, int beta, pair<int, int> *pos) {
         }
     } else {
         score = INT_MAX;
-        for (int i = 0; i < candidates.size() && i < 5; ++i) {
+        for (int i = 0; i < candidates.size() && i < 7; ++i) {
             auto x = candidates[i].second;
             drop(x);
             int res = alphaBeta(depth - 1, alpha, beta) + (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
