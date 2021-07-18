@@ -8,6 +8,6 @@ set(LINK_DIR ./lib)
 include_directories(${INC_DIR})
 link_directories(${LINK_DIR})
 
-add_executable(Gobang2 main.cpp Gobang.cpp Gobang.h EasyX.cpp EasyX.h Play.cpp Play.h)
+add_executable(Gobang2 main.cpp Gobang.cpp Gobang.h EasyX.cpp EasyX.h Play.cpp Play.h Zobrist.cpp Zobrist.h)
 
 target_link_libraries(Gobang2 EasyXa EasyXw VSCustomNativeHeapEtwProvider VsGraphicsHelper)
