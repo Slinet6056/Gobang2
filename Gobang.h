@@ -10,9 +10,6 @@
 #include <chrono>
 #include <ctime>
 
-#include <iostream>
-#include <fstream>
-
 using std::vector, std::pair, std::stack, std::map, std::sort, std::max, std::min;
 
 class Gobang {
