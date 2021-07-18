@@ -46,6 +46,7 @@ Gobang::Gobang() {
         }
     }
     isValid[8][8] = 1;
+    key = 13107947371880225101;
 }
 
 void Gobang::initialize() {
@@ -92,8 +93,12 @@ int Gobang::drop(pair<int, int> p) {
     if (p.first < 1 || p.first > 15 || p.second < 1 || p.second > 15 || board[p.first][p.second])
         return 1;
     board[p.first][p.second] = turn;
-    for (int i = max(1, p.first - 2); i <= min(15, p.first + 2); ++i)
-        for (int j = max(1, p.second - 2); j <= min(15, p.second + 2); ++j)
+    if (turn == 1)
+        key ^= board1[p.first][p.second];
+    else
+        key ^= board2[p.first][p.second];
+    for (int i = max(1, p.first - 1); i <= min(15, p.first + 1); ++i)
+        for (int j = max(1, p.second - 1); j <= min(15, p.second + 1); ++j)
             ++isValid[i][j];
     record.push(p);
     turn = 3 - turn;
@@ -105,8 +110,12 @@ void Gobang::undo() {
         return;
     pair<int, int> p = record.top();
     board[p.first][p.second] = 0;
-    for (int i = max(1, p.first - 2); i <= min(15, p.first + 2); ++i)
-        for (int j = max(1, p.second - 2); j <= min(15, p.second + 2); ++j)
+    if (turn == 2)
+        key ^= board1[p.first][p.second];
+    else
+        key ^= board2[p.first][p.second];
+    for (int i = max(1, p.first - 1); i <= min(15, p.first + 1); ++i)
+        for (int j = max(1, p.second - 1); j <= min(15, p.second + 1); ++j)
             --isValid[i][j];
     record.pop();
     turn = 3 - turn;
@@ -137,7 +146,7 @@ pair<int, int> Gobang::next() {
     if (record.size() < 3 || record.size() > 150)
         alphaBeta(6, INT_MIN, INT_MAX, &pos);
     else if (record.size() > 170)
-        alphaBeta(4, INT_MIN, INT_MAX, &pos);
+        alphaBeta(6, INT_MIN, INT_MAX, &pos);
     else
         alphaBeta(8, INT_MIN, INT_MAX, &pos);
     return pos;
@@ -165,7 +174,13 @@ int Gobang::alphaBeta(int depth, int alpha, int beta, pair<int, int> *pos) {
         for (int i = 0; i < candidates.size() && i < 7; ++i) {
             auto x = candidates[i].second;
             drop(x);
-            int res = alphaBeta(depth - 1, alpha, beta) - (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
+            int res;
+            if (zobrist.count(key) && zobrist[key].first >= depth)
+                res = zobrist[key].second;
+            else {
+                res = alphaBeta(depth - 1, alpha, beta) - (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
+                zobrist[key] = {depth, res};
+            }
             if (res > score) {
                 score = res;
                 if (pos)
@@ -181,7 +196,13 @@ int Gobang::alphaBeta(int depth, int alpha, int beta, pair<int, int> *pos) {
         for (int i = 0; i < candidates.size() && i < 7; ++i) {
             auto x = candidates[i].second;
             drop(x);
-            int res = alphaBeta(depth - 1, alpha, beta) + (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
+            int res;
+            if (zobrist.count(key) && zobrist[key].first >= depth)
+                res = zobrist[key].second;
+            else {
+                res = alphaBeta(depth - 1, alpha, beta) + (int) sqrt((x.first - 8) * (x.first - 8) + (x.second - 8) * (x.second - 8));
+                zobrist[key] = {depth, res};
+            }
             if (res < score) {
                 score = res;
                 if (pos)
@@ -417,7 +438,7 @@ int Gobang::analysisPoint_my(const vector<int> &line, int t) {
     for (; line[rightRange + 1] == t; rightRange++);
     switch (rightRange - leftRange + 1) {
         case 5:
-            return 10000000;
+            return 100000000;
         case 4:
             if (line[leftRange - 1] == 0 && line[rightRange + 1] == 0)
                 return 1000; //011110
@@ -572,9 +593,9 @@ int Gobang::analysisPoint_adversary(const vector<int> &line, int t) {
     switch (cntLeft) { // NOLINT(hicpp-multiway-paths-covered)
         case 4:
             if (line[0] == 0)
-                opponentScore += 10000000 - 300; //011112
+                opponentScore += 100000000 - 300; //011112
             else
-                opponentScore += 10000000; //211112
+                opponentScore += 100000000; //211112
             break;
         case 3:
             if (line[1] == 0) {
