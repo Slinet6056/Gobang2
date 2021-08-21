@@ -1,4 +1,6 @@
 # 五子棋
+[![wakatime](https://wakatime.com/badge/github/Slinet6056/Gobang2.svg)](https://wakatime.com/badge/github/Slinet6056/Gobang2)
+
 使用 C++ 和 EasyX 图形库编写  
 程序文件使用 GBK 编码  
 main函数就在`main.cpp`里
